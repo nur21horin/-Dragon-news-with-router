@@ -1,12 +1,29 @@
-import React from "react";
-import { Outlet } from "react-router";
+import React, { useEffect, useState } from "react";
+import { Outlet, useNavigation } from "react-router";
 import Header from "../components/Header";
 import LatestNews from "../components/LatestNews";
 import Navbar from "../components/Navbar";
 import LeftAside from "../components/homelayout/LeftAside";
 import RighAside from "../components/homelayout/RighAside";
-
+import Loading from "../pages/loading";
 const HomeLayout = () => {
+  const { state } = useNavigation();
+  const [showLoading, setshowLoading] = useState(false);
+  useEffect(() => {
+    let timer;
+    if (state === "loading") {
+      setshowLoading(true);
+      timer = setTimeout(() => {
+        setshowLoading(false);
+      }, 3000);
+    }else{
+      timer=setTimeout(()=>{
+        setshowLoading(false);
+      },3000);
+    }
+    return ()=>clearTimeout(timer);
+
+  },[state]);
   return (
     <div>
       <header>
@@ -23,7 +40,7 @@ const HomeLayout = () => {
           <LeftAside></LeftAside>
         </aside>
         <section className="main col-span-6">
-          <Outlet></Outlet>
+          {showLoading ? <Loading></Loading> : <Outlet></Outlet>}
         </section>
         <aside className="col-span-3">
           <RighAside></RighAside>
